@@ -6,21 +6,21 @@
     <title>FormData object</title>
   </head>
   <body>
-    <!-- Пример #2 -->
-    <h3>Пример 2</h3>
+    <!-- Example #2 -->
+    <h3>Example 2</h3>
     <div>
       <button>Click me!</button>
     </div>
 
     <script>
-      // Пример #2
+      // Example #2
       const divBlock = document.querySelector('div');
       const button = document.querySelector('button');
       const dataObject = {
-        name: 'Пупсик',
-        age: 26,
-        favoriteFood: 'каша',
-        favoritePet: 'Алекс',
+        name: 'ivan',
+        age: 20,
+        favoriteFood: 'Hot dog',
+        favoritePet: 'Cats',
       };
 
       button.addEventListener('click', () => sendData(dataObject));
@@ -43,7 +43,7 @@
     </script>
 
     <style>
-      /* Пример #3 */
+      /* Example #3 */
       ul {
         list-style: none;
         padding: 0;
@@ -59,8 +59,8 @@
       }
     </style>
 
-  <!-- Пример #3 -->
-    <h3>Пример 3</h3>
+  <!-- Example #3 -->
+    <h3>Example 3</h3>
     <form id="myForm" enctype="multipart/form-data">
       <ul>
         <li>
@@ -78,9 +78,9 @@
         <li>
           <label for="myPet">Favorite pet:</label>
           <select name="favoritePet">
-            <option value="Бармалейка">Бармалейка</option>
-            <option value="Алекс">Алекс</option>
-            <option value="Кошка Соня">Кошка Соня</option>
+            <option value="cats">Cats</option>
+            <option value="dogs">Dogs</option>
+            <option value="dirds">Birds</option>
           </select>
         </li>
         <li>
@@ -88,13 +88,13 @@
           <input id="photo" type="file" name="myFile">
         </li>
         <li>
-          <button>Go!</button>
+          <button>Send to server!</button>
         </li>
       </ul>
     </form>
 
     <script>
-      // Пример #3
+      // Example #3
       const myForm = document.getElementById('myForm');
 
       myForm.addEventListener('submit', function(e) {
@@ -111,7 +111,7 @@
         XHR.addEventListener('error', () => console.log('Oops! Something went wrong.'));
         XHR.addEventListener('loadend', () => renderData(XHR.responseText));
 
-        XHR.open('POST', 'http://127.0.0.1:3333/');
+        XHR.open('POST', 'http://localhost:3333/');
         XHR.send(FD);
       }
 
