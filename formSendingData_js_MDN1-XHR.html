@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sending form data via JavaScript</title>
+  </head>
+  <body>
+    <!-- Пример #1 -->
+    <div>
+      <h3>Пример 1</h3>
+      <button>Click me!</button>
+    </div>
+
+    <script>
+      // Пример #1
+      const button = document.querySelector('button');
+      const dataObject = {
+        name: 'Vova',
+        age: 26,
+        favoriteFood: 'Apple',
+        favoritePet: 'Cat',
+      };
+
+      button.addEventListener('click', () => sendData( dataObject ));
+
+      function sendData(data) {
+        console.log('Sending data');
+        XHR = new XMLHttpRequest();
+        let urlEncodedData = '',
+            urlEncodedDataPairs = [],
+            name;
+
+        for(name in data) {
+          urlEncodedDataPairs.push( encodeURIComponent(name) + '=' + encodeURIComponent(data[name]) );
+        }
+
+        urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
+
+        XHR.addEventListener('load', () => console.log('Yeah! Data sent and response loaded.'));
+        XHR.addEventListener('error', () => console.log('Oops! Something went wrong.'));
+        XHR.addEventListener('progress', (e) => console.log(`Request: loaded ${event.loaded} of ${event.total} bite.`));
+        XHR.addEventListener('loadend', () => {
+          console.log(XHR.responseText);
+          renderData(XHR.responseText);
+        });
+
+        XHR.open('POST', 'http://localhost:3333/');
+        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        XHR.send(urlEncodedData);
+      }
+
+      function renderData(data) {
+        const divBlock = document.getElementsByTagName('div')[0];
+        const para = document.createElement('p');
+
+        para.innerHTML = data;
+        divBlock.append(para);
+      }
+    </script>
+  </body>
+</html>

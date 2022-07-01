@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dealing with binary data</title>
+  </head>
+  <body>
+    <form id="theForm" method="POST">
+      <p>
+        <label for="theText">text data:</label>
+        <input id="theText" type="text" name="myText">
+      </p>
+      <p>
+        <label for="theFile">file data:</label>
+        <input id="theFile" type="file" name="myFile">
+      </p>
+      <button id="button1" type="submit">Send Me!</button>
+    </form>
+
+    <script>
+      const text = document.getElementById('theText');
+      const file = {
+        dom: document.getElementById('theFile'),
+        binary: null
+      };
+
+      const reader = new FileReader();
+
+      reader.addEventListener('load', () => file.binary = reader.result);
+
+      if(file.dom.files[0]) {
+        reader.readAsBinaryString(file.dom.files[0]);
+      } else {
+        file.dom.addEventListener('change', () => {
+          if(reader.readyState === FileReader.LOADING) {
+            reader.abort();
+          }
+            reader.readAsArrayBuffer(file.dom.files[0]);
+        });
+      }
+
+      function sendData() {
+        if(!file.binary && file.dom.files.length > 0) {
+          setTimeout(sendData, 10);
+          return;
+        }
+
+        const XHR = new XMLHttpRequest();
+        const boundary = 'blob';
+        let data = '';
+
+        // Files
+        if(file.dom.files[0]) {
+          data += '--' + boundary + '\r\n';
+          data += 'content-disposition: form-data; '
+            + `name="${file.dom.name}"; `
+            + `filename="${file.dom.files[0].name}"\r\n`;
+          data += `Content-Type: ${file.dom.files[0].type}; charset=utf-8\r\n`;
+          data += '\r\n';
+          data += file.binary + '\r\n';
+        }
+
+        // Text
+        data += '--' + boundary + '\r\n';
+        data += 'content-disposition: form-data; '
+          + `name="${text.name}"\r\n`;
+        data += '\r\n';
+        data += text.value + '\r\n';
+        data += '--' + boundary + '--';
+
+        XHR.addEventListener('load', () => console.log('Oops! Something went wrong.'));
+        XHR.open('POST', 'http://localhost:3333/');
+        XHR.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+        XHR.setRequestHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9');
+        console.log(data);
+        XHR.send(data);
+      }
+
+      const form = document.getElementById('theForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendData();
+      });
+    </script>
+  </body>
+</html>
