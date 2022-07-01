@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const multer  = require('multer');
 
 const storage = multer.diskStorage({
@@ -19,8 +18,8 @@ const upload = multer({ storage: storage });
 app.use(cors({
   origin: '*'
 }));
-app.use(bodyParser.raw());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.raw());
+app.use(express.urlencoded({ extended: true }));
 
 app.post('/', upload.single('myFile'), (req,res) => {
   console.log(req.body, req.file);
